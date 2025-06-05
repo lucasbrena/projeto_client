@@ -1,33 +1,56 @@
 <template>
   <v-container>
     <Tabs></Tabs>
-    <v-row justify="center">
-      <v-col v-for="prato in pratos" :key="prato.id" cols="12" sm="6" md="4">
-        <v-card class="mx-auto my-4" max-width="450" outlined>
-          <v-img
-            :src="prato.imagem"
-            height="180px"
-            class="white--text align-end"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-          >
-            <v-card-title class="headline">{{ prato.nome }}</v-card-title>
-          </v-img>
-          <v-card-subtitle class="pt-2 pb-0 font-weight-bold text-primary">
-            <h2>R$ {{ prato.preco.toFixed(2) }}</h2><br>
-          </v-card-subtitle>
-          <v-card-text class="text--secondary">
-            {{ prato.descricao }}
-          </v-card-text>
-
-          <v-card-actions class="d-flex justify-center pb-4">
-            <v-btn color="warning" elevation="2" rounded class="px-6">
-              <v-icon dark right>fas fa-cart-plus</v-icon>
-              Adicionar ao Pedido
-            </v-btn>
-          </v-card-actions>
+     <!-- Menu Screen -->
+    <v-row justify="center" >
+      <v-col cols="12" sm="6" md="4" lg="3">
+        <v-card class="phone-mockup mx-auto" elevation="8">
+          <div class="screen">
+            <div class="status-bar">
+              <span>9:41</span>
+              <span class="signal">●●●●○</span>
+            </div>
+            <v-card-text class="menu-screen">
+              <div class="menu-header">
+                <h2 class="menu-title">Cardápio Digital</h2>
+                <p class="menu-subtitle">Mesa 12 • Restaurante Bella Vista</p>
+              </div>
+              <v-chip-group
+                v-model="selectedCategory"
+                class="menu-categories mb-4 mt-n4"
+                mandatory
+              >
+                <v-chip
+                  v-for="category in categories"
+                  :key="category"
+                  :value="category"
+                
+                  class="category-chip"
+                 
+                >
+                  {{ category }}
+                </v-chip>
+              </v-chip-group>
+              <div class="menu-items">
+                <div
+                  v-for="item in menuItems"
+                  :key="item.id"
+                  class="menu-item"
+                >
+                  <div class="item-info">
+                    <h4>{{ item.name }}</h4>
+                    <p>{{ item.description }}</p>
+                  </div>
+                  <div class="item-price">{{ formatPrice(item.price) }}</div>
+                </div>
+              </div>
+            </v-card-text>
+          </div>
         </v-card>
+        <div class="screen-label mt-n10">3. Tela do Cardápio</div>
       </v-col>
     </v-row>
+  
   </v-container>
 </template>
 
@@ -40,37 +63,52 @@ export default {
   },
   data: () => ({
     tab: "option-1",
-    pratos: [
-      {
-        id: 1,
-        nome: "Filé à Parmegiana",
-        descricao:
-          "Filé empanado com molho de tomate e queijo, acompanhado de arroz e batata frita.",
-        preco: 49.9,
-        imagem: "/assets/parmagiana.jpg",
-      },
-      {
-        id: 2,
-        nome: "Risoto de Camarão",
-        descricao: "Risoto cremoso com camarões frescos e temperos especiais.",
-        preco: 59.9,
-        imagem: "/assets/risotto.jpg",
-      },
-      {
-        id: 3,
-        nome: "Salada Caesar",
-        descricao:
-          "Alface, frango grelhado, croutons, parmesão e molho caesar.",
-        preco: 29.9,
-        imagem: "/assets/ceasarsalad.jpg",
-      },
-    ],
+    selectedCategory: "Todos",
+     categories: ['Pratos', 'Bebidas', 'Sobremesas'],
+      menuItems: [
+        {
+          id: 1,
+          name: 'Filé à Parmegiana',
+          description: 'Filé bovino empanado com molho de tomate e queijo derretido',
+          price: 45.90
+        },
+        {
+          id: 2,
+          name: 'Salmão Grelhado',
+          description: 'Salmão fresco grelhado com legumes e arroz integral',
+          price: 52.90
+        },
+        {
+          id: 3,
+          name: 'Risotto de Camarão',
+          description: 'Arroz arbóreo cremoso com camarões frescos e ervas',
+          price: 48.90
+        }
+      ],   
   }),
+  methods: {
+    formatPrice(price) {
+      return `R$ ${price.toFixed(2).replace('.', ',')}`;
+    },
+  },
 };
 </script>
 
 <style scoped>
-.text-center {
-  text-align: center;
+.phone-mockup {
+  width: 380px;
+  height: 600px;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 7px solid #000;
+}
+.v-chip.category-chip {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+}
+
+.v-chip.category-chip.v-chip--selected {
+  background-color: #000 !important;
+  color: #ffffff !important;
 }
 </style>
