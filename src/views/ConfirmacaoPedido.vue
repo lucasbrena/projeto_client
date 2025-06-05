@@ -22,7 +22,7 @@
                   Seu pedido foi enviado para a cozinha.<br />
                   Tempo estimado: 25-30 minutos
                 </p>
-                <v-btn color="primary" class="primary-btn mb-2">
+                <v-btn class="primary-btn mb-2">
                   Acompanhar Pedido
                 </v-btn>
                 <v-btn outlined class="secondary-btn">

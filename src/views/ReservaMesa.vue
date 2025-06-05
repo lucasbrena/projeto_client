@@ -24,6 +24,7 @@
                     dense
                     hide-details
                     class="mb-3"
+                    style="border-radius: 10px;"
                   />
                   <v-text-field
                     v-model="reservationData.time"
@@ -32,6 +33,7 @@
                     dense
                     hide-details
                     class="mb-3"
+                    style="border-radius: 10px;"
                   />
                   <v-select
                     v-model="reservationData.people"
@@ -40,10 +42,9 @@
                     dense
                     hide-details
                     class="mb-4"
+                    style="border-radius: 10px;"
                   />
                   <v-btn
-                    color="primary"
-                    
                     large
                     class="primary-btn"
                   >

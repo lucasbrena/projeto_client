@@ -64,12 +64,10 @@
                 </div>
               </div>
               <v-btn
-                color="primary"
-              
                 large
                 class="primary-btn"
               >
-                Finalizar Pedido
+                Realizar Pagamento
               </v-btn>
             </v-card-text>
           </div>

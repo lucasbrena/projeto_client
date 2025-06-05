@@ -30,9 +30,7 @@
                   Seu pedido está sendo preparado.<br>
                   Tempo estimado: 25-30 minutos
                 </p>
-                <v-btn
-                  color="primary"
-                 
+                <v-btn                                   
                   large
                   class="primary-btn"
                 >

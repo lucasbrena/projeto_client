@@ -20,7 +20,7 @@
                     src="./assets/comanda-digital.png"
                     alt="QR Code"
                     contain
-                    height="100%"
+                    height="95%"
                   />
                   <div class="qr-corner top-left"></div>
                   <div class="qr-corner top-right"></div>
@@ -29,7 +29,7 @@
                 </div>
                 <h3 class="qr-text">Escaneie o QR Code para começar</h3>
                 <p class="qr-subtitle">
-                  Posicione o código QR da mesa<br />dentro da moldura
+                  Posicione o código QR da <br />mesa para iniciar
                 </p>
               </div>
             </v-card-text>
@@ -48,23 +48,10 @@ export default {
     Tabs,
   },
   data: () => ({
-    // email: "",
-    // password: "",
-    // showPassword: false,
-    // loading: false,
+ 
   }),
   methods: {
-    // async login() {
-    //   if (this.$refs.loginForm.validate()) {
-    //     this.loading = true;
-    //     // Simulate API call
-    //     setTimeout(() => {
-    //       this.loading = false;
-    //       console.log("Login:", { email: this.email, password: this.password });
-    //       alert("Login successful!");
-    //     }, 1500);
-    //   }
-    // },
+  
   },
 };
 </script>

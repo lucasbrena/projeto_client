@@ -83,7 +83,7 @@
 .qr-viewfinder {
   width: 200px;
   height: 200px;
-  border: 3px solid #6c757d;
+  /* border: 3px solid #6c757d; */
   border-radius: 20px;
   position: relative;
   margin-bottom: 30px;
@@ -414,12 +414,14 @@
 .primary-btn {
   background-color: #2c2c2c !important;
   color: #ffffff !important;
+  border-radius: 10px;
 }
 
 .secondary-btn {
   background-color: #f8f9fa !important;
   color: #2c2c2c !important;
-  border: 1px solid #e9ecef !important;
+  border: 2px solid #000 !important;
+  border-radius: 10px;
 }
 
 /* Vuetify overrides */
