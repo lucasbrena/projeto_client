@@ -31,11 +31,18 @@
               </v-chip-group>
               <div class="menu-items">
                 <div v-for="item in menuItems" :key="item.id" class="menu-item">
-                  <div class="item-info">
-                    <h4>{{ item.name }}</h4>
-                    <p>{{ item.description }}</p>
-                  </div>
-                  <div class="item-price">{{ formatPrice(item.price) }}</div>
+                  <v-row no-gutters>
+                    <v-col cols="12" m="8" md="8" lg="7">
+                      <div class="item-info">
+                        <h4>{{ item.name }}</h4>
+                        <p>{{ item.description }}</p>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" m="3" md="3" lg="4">
+                      <div class="item-price">R$ {{ formatPrice(item.price) }}</div>
+                      <div><v-btn small  class="primary-btn"> <v-icon small>fas fa-utensils</v-icon> quero</v-btn> </div>
+                    </v-col>
+                  </v-row>
                 </div>
               </div>
             </v-card-text>
@@ -48,7 +55,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import Tabs from "../components/TabTelas.vue";
 export default {
   components: {
@@ -79,11 +86,44 @@ export default {
         price: 48.9,
       },
     ],
+    cliente: {},
   }),
+  created() {
+    this.getCliente();
+  },
   methods: {
     formatPrice(price) {
-      return `R$ ${price.toFixed(2).replace(".", ",")}`;
+      return `${price.toFixed(2).replace(".", ",")}`;
     },
+    async apiRequest(method, url, data = null) {
+      try {
+        const config = {
+          method,
+          url,
+          data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const response = await axios(config);
+        return response.data;
+      } catch (error) {
+        console.error(
+          `Erro na requisição ${method.toUpperCase()} ${url}:`,
+          error
+        );
+        alert("Ocorreu um erro ao processar a solicitação.");
+        throw error;
+      }
+    },
+    async getCliente() {
+        let clienteId = 14;
+        this.cliente = await this.apiRequest(
+          "get",
+          `http://localhost:3000/cliente/${clienteId}`
+        );
+        console.log("Cliente:", this.cliente);
+      },
   },
 };
 </script>

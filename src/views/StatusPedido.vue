@@ -48,7 +48,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import Tabs from "../components/TabTelas.vue";
 export default {
   components: {
@@ -63,6 +63,31 @@ export default {
         { icon: '🛎️', text: 'Entregue' }
       ]    
   }),
+  created() {
+  },
+  methods: {
+     async apiRequest(method, url, data = null) {
+      try {
+        const config = {
+          method,
+          url,
+          data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const response = await axios(config);
+        return response.data;
+      } catch (error) {
+        console.error(
+          `Erro na requisição ${method.toUpperCase()} ${url}:`,
+          error
+        );
+        alert("Ocorreu um erro ao processar a solicitação.");
+        throw error;
+      }
+    },
+  }
 };
 </script>
 

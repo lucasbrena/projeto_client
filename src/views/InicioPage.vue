@@ -12,7 +12,8 @@
             </div>
             <v-card-text class="qr-screen">
               <div class="menu-header">
-                <h2 class="menu-title">Comanda Digital</h2>
+                <h3 class="menu-title">Comanda Digital</h3>
+                <h2>Olá {{ cliente.nome }}</h2>
               </div>
               <div class="qr-content">
                 <div class="qr-viewfinder">
@@ -42,16 +43,48 @@
 </template>
 
 <script>
+import axios from "axios";
 import Tabs from "../components/TabTelas.vue";
 export default {
   components: {
     Tabs,
   },
   data: () => ({
- 
+    cliente: {},
   }),
+  created() {
+    this.getCliente();
+  },
   methods: {
-  
+    async apiRequest(method, url, data = null) {
+      try {
+        const config = {
+          method,
+          url,
+          data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const response = await axios(config);
+        return response.data;
+      } catch (error) {
+        console.error(
+          `Erro na requisição ${method.toUpperCase()} ${url}:`,
+          error
+        );
+        alert("Ocorreu um erro ao processar a solicitação.");
+        throw error;
+      }
+    },
+    async getCliente() {
+      let clienteId = 14;
+      this.cliente = await this.apiRequest(
+        "get",
+        `http://localhost:3000/cliente/${clienteId}`
+      );
+      console.log("Cliente:", this.cliente);
+    },
   },
 };
 </script>

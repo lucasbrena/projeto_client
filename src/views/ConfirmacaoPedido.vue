@@ -22,7 +22,7 @@
                   Seu pedido foi enviado para a cozinha.<br />
                   Tempo estimado: 25-30 minutos
                 </p>
-                <v-btn class="primary-btn mb-2">
+                <v-btn @click="deleteCliente()" class="primary-btn mb-2">
                   Acompanhar Pedido
                 </v-btn>
                 <v-btn outlined class="secondary-btn">
@@ -47,12 +47,22 @@ export default {
   data: () => ({
     tab: "option-1",
   }),
-  created() {},
+  created() {
+    this.getCliente();
+  },
   computed: {},
   methods: {
     async apiRequest(method, url, data = null) {
       try {
-        const response = await axios({ method, url, data });
+        const config = {
+          method,
+          url,
+          data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const response = await axios(config);
         return response.data;
       } catch (error) {
         console.error(
@@ -63,10 +73,74 @@ export default {
         throw error;
       }
     },
-    async teste() {
-      let teste = await this.apiRequest("get", "http://localhost:3000/tarefas");
-      console.log("porra", teste);
+    //
+    async getCliente() {
+      let clienteId = 14;
+      const response = await this.apiRequest(
+        "get",
+        `http://localhost:3000/cliente/${clienteId}`
+      );
+      console.log("Cliente:", response);
     },
+    async getAllClientes() {
+      let teste = await this.apiRequest("get", "http://localhost:3000/cliente");
+      console.log("teste", teste);
+    },
+    async postCliente() {
+      try {
+        const clientData = {
+          cpf: "123456789012",
+          nome: "Jose Mendes",
+          email: "jose@email.com",
+        };
+
+        const response = await this.apiRequest(
+          "post",
+          "http://localhost:3000/cliente",
+          clientData
+        );
+
+        console.log("Cliente criado com sucesso:", response);
+        return response;
+      } catch (error) {
+        console.error("Erro ao criar cliente:", error);
+        return null;
+      }
+    },
+    async updateCliente() {
+      try {
+        let clienteId = 15; // Substitua pelo ID do cliente que deseja atualizar
+        const updatedData = {
+          nome: "Maria Silva",
+          email: "maria@email.com",
+        };
+        const response = await this.apiRequest(
+          "patch",
+          `http://localhost:3000/cliente/${clienteId}`,
+          updatedData
+        );
+        console.log("Cliente atualizado com sucesso:", response);
+        return response;
+      } catch (error) {
+        console.error("Erro ao atualizar cliente:", error);
+        return null;
+      }
+    },
+    // nao possui delete cliente no backend
+    // async deleteCliente() {
+    //   try {
+    //     let clienteId = 15; // Substitua pelo ID do cliente que deseja deletar
+    //     const response = await this.apiRequest(
+    //       "delete",
+    //       `http://localhost:3000/cliente/${clienteId}`
+    //     );
+    //     console.log("Cliente deletado com sucesso:", response);
+    //     return response;
+    //   } catch (error) {
+    //     console.error("Erro ao deletar cliente:", error);
+    //     return null;
+    //   }
+    // },
   },
 };
 </script>
