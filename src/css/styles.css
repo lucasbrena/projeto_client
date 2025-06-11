@@ -182,6 +182,7 @@
   align-items: center;
   padding: 5px 0;
   border-bottom: 1px solid #f1f3f4;
+  height: 100px;
 }
 
 .item-info h4 {

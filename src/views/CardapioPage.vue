@@ -10,14 +10,14 @@
               <span>9:41</span>
               <span class="signal">●●●●○</span>
             </div>
-            <v-card-text class="menu-screen">
+            <v-card-text class="menu-screen mt-n2">
               <div class="menu-header">
                 <h2 class="menu-title">Cardápio Digital</h2>
                 <p class="menu-subtitle">Mesa 12 • Restaurante Bella Vista</p>
               </div>
               <v-chip-group
                 v-model="selectedCategory"
-                class="menu-categories mb-4 mt-n4"
+                class="menu-categories mb-4 mt-n6"
                 mandatory
               >
                 <v-chip
@@ -34,16 +34,31 @@
                   <v-row no-gutters>
                     <v-col cols="12" m="8" md="8" lg="7">
                       <div class="item-info">
-                        <h4>{{ item.name }}</h4>
-                        <p>{{ item.description }}</p>
+                        <h4>{{ item.nome }}</h4>
+                        <p>{{ item.descricao }}</p>
                       </div>
                     </v-col>
                     <v-col cols="12" m="3" md="3" lg="4">
-                      <div class="item-price">R$ {{ formatPrice(item.price) }}</div>
-                      <div><v-btn small  class="primary-btn"> <v-icon small>fas fa-utensils</v-icon> quero</v-btn> </div>
+                      <div class="item-price">R$ {{ item.valor }}</div>
+                      <div>
+                        <v-btn
+                          small
+                          class="primary-btn"
+                          @click="savePedido(item)"
+                        >
+                          <v-icon small>fas fa-utensils</v-icon> quero</v-btn
+                        >
+                      </div>
                     </v-col>
                   </v-row>
                 </div>
+              </div>
+              <div>
+                <v-row>
+                  <v-col cols="12" class="text-center">
+                    <v-btn class="primary-btn mt-4">Finalizar Pedido</v-btn>
+                  </v-col>
+                </v-row>
               </div>
             </v-card-text>
           </div>
@@ -65,35 +80,27 @@ export default {
     tab: "option-1",
     selectedCategory: "Todos",
     categories: ["Pratos", "Bebidas", "Sobremesas"],
-    menuItems: [
-      {
-        id: 1,
-        name: "Filé à Parmegiana",
-        description:
-          "Filé bovino empanado com molho de tomate e queijo derretido",
-        price: 45.9,
-      },
-      {
-        id: 2,
-        name: "Salmão Grelhado",
-        description: "Salmão fresco grelhado com legumes e arroz integral",
-        price: 52.9,
-      },
-      {
-        id: 3,
-        name: "Risotto de Camarão",
-        description: "Arroz arbóreo cremoso com camarões frescos e ervas",
-        price: 48.9,
-      },
-    ],
+    menuItems: [],
     cliente: {},
+    estabelecimento: {},
+    dataAtual: new Date().toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }),
   }),
   created() {
     this.getCliente();
+    this.getEstabelecimento();
+    this.getProdutos();
+    this.getPedido();
+    this.getPedidoItem();
+
+    // this.getRamos();
   },
   methods: {
-    formatPrice(price) {
-      return `${price.toFixed(2).replace(".", ",")}`;
+    formatPrice(valor) {
+      return `${valor.toFixed(2).replace(".", ",")}`;
     },
     async apiRequest(method, url, data = null) {
       try {
@@ -117,13 +124,162 @@ export default {
       }
     },
     async getCliente() {
-        let clienteId = 14;
-        this.cliente = await this.apiRequest(
+      let clienteId = 14;
+      this.cliente = await this.apiRequest(
+        "get",
+        `http://localhost:3000/cliente/${clienteId}`
+      );
+      console.log("Cliente:", this.cliente);
+    },
+    async getEstabelecimento() {
+      try {
+        let estabelecimentoId = 1; 
+        this.estabelecimento = await this.apiRequest(
           "get",
-          `http://localhost:3000/cliente/${clienteId}`
+          `http://localhost:3000/estabelecimento/${estabelecimentoId}`
+        );     
+        console.log("Estabelecimento:", this.estabelecimento);
+      } catch (error) {
+        console.error("Erro ao obter estabelecimento:", error);
+      }
+    },
+    async getProdutos() {
+      try {
+        let produtos = await this.apiRequest(
+          "get",
+          "http://localhost:3000/produto"
         );
-        console.log("Cliente:", this.cliente);
-      },
+        console.log("Produtos:", produtos);
+        this.menuItems = produtos;
+      } catch (error) {
+        console.error("Erro ao obter produtos:", error);
+      }
+    },
+    async getPedido() {
+      try {
+        let pedidos = await this.apiRequest(
+          "get",
+          "http://localhost:3000/pedido"
+        );
+        console.log("Pedidos:", pedidos);
+      } catch (error) {
+        console.error("Erro ao obter pedidos:", error);
+      }
+    },
+    async getPedidoItem() {
+      try {
+        let pedidoItems = await this.apiRequest(
+          "get",
+          "http://localhost:3000/pedido-item"
+        );
+        console.log("Itens do Pedido:", pedidoItems);
+      } catch (error) {
+        console.error("Erro ao obter itens do pedido:", error);
+      }
+    },
+    async savePedido(item) {
+      try {
+        console.log(item);
+        
+        let obj = {
+          dataCriacao: this.dataAtual,
+          cliente: this.cliente.id,
+          estabelecimento: this.estabelecimento.id
+        };
+        
+          let response = await this.apiRequest(
+            "post",
+            "http://localhost:3000/pedido",
+            obj
+          );
+        console.log("Pedido salvo:", response);
+        if (response && response.id) {
+          try {
+            let itemPedido = {
+              quantidade: 1,
+              pedido: response.id,
+              produto: item.id,
+            };
+            let itemResponse = await this.apiRequest(
+              "post",
+              "http://localhost:3000/pedido-item",
+              itemPedido
+            );
+            console.log("Item do pedido salvo:", itemResponse);
+          } catch (error) {
+            console.error("Erro ao salvar item do pedido:", error);
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao salvar pedido:", error);
+      }      
+    },
+
+    //  async postEstabelecimento() {
+    //     try {
+    //       const estabelecimentoData = {
+    //         nome: "Restaurante Turiassu",
+    //         cnpj: "12.345.678/0001-90",
+    //         endereco: "Rua Turiassu, 1234",
+    //         idRamo: 1,
+    //       };
+    //       let ramo = await this.apiRequest(
+    //         "post",
+    //         "http://localhost:3000/estabelecimento",
+    //         estabelecimentoData
+    //       );
+    //       console.log("Ramo criado:", ramo);
+    //     } catch (error) {
+    //       console.error("Erro ao criar ramo:", error);
+    //     }
+    //   },
+
+    // async postProduto() {
+    //   try {
+    //     const produtoData = {
+    //       nome: "Risoto de Camarão",
+    //       descricao: "Arroz arbóreo cremoso com camarões frescos e ervas",
+    //       valor: 35.5,
+    //       idEstabelecimento: 1, // Supondo que o ramo já esteja criado
+    //     };
+    //     let produto = await this.apiRequest(
+    //       "post",
+    //       "http://localhost:3000/produto",
+    //       produtoData
+    //     );
+    //     console.log("Produto criado:", produto);
+    //   } catch (error) {
+    //     console.error("Erro ao criar produto:", error);
+    //   }
+    // },
+
+    // async getRamos() {
+    //   try {
+    //     let ramo = await this.apiRequest(
+    //       "get",
+    //       "http://localhost:3000/ramos"
+    //     );
+    //     console.log("Ramos:", ramo);
+    //   } catch (error) {
+    //     console.error("Erro ao obter ramos:", error);
+    //   }
+    // },
+
+    // async postRamo() {
+    //   try {
+    //      const ramoData = {
+    //       nome: "Restaurante Turiassu",
+    //     };
+    //     let ramo = await this.apiRequest(
+    //       "post",
+    //       "http://localhost:3000/ramos",
+    //       ramoData
+    //     );
+    //     console.log("Ramo criado:", ramo);
+    //   } catch (error) {
+    //     console.error("Erro ao criar ramo:", error);
+    //   }
+    // },
   },
 };
 </script>
