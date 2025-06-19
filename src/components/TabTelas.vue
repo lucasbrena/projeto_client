@@ -14,9 +14,9 @@
       <v-tab to="/cardapio">
         Cardapio        
       </v-tab>
-      <v-tab to="/confirmacao">
+      <!-- <v-tab to="/confirmacao">
         Confirmação      
-      </v-tab>
+      </v-tab> -->
          <v-tab to="/status">
         Status      
       </v-tab>

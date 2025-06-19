@@ -184,32 +184,38 @@ export default {
         let obj = {
           dataCriacao: this.dataAtual,
           cliente: this.cliente.id,
-          estabelecimento: this.estabelecimento.id
-        };
-        
-          let response = await this.apiRequest(
-            "post",
-            "http://localhost:3000/pedido",
-            obj
-          );
-        console.log("Pedido salvo:", response);
-        if (response && response.id) {
-          try {
-            let itemPedido = {
-              quantidade: 1,
-              pedido: response.id,
+          estabelecimento: this.estabelecimento.id,
+          itens: [{
+              quantidade: 1,             
               produto: item.id,
-            };
-            let itemResponse = await this.apiRequest(
-              "post",
-              "http://localhost:3000/pedido-item",
-              itemPedido
-            );
-            console.log("Item do pedido salvo:", itemResponse);
-          } catch (error) {
-            console.error("Erro ao salvar item do pedido:", error);
-          }
-        }
+            }],
+        };
+        console.log("Objeto do pedido:", obj);
+        
+        
+        //   let response = await this.apiRequest(
+        //     "post",
+        //     "http://localhost:3000/pedido",
+        //     obj
+        //   );
+        // console.log("Pedido salvo:", response);
+        // if (response && response.id) {
+        //   try {
+        //     let itemPedido = {
+        //       quantidade: 1,
+        //       pedido: response.id,
+        //       produto: item.id,
+        //     };
+        //     let itemResponse = await this.apiRequest(
+        //       "post",
+        //       "http://localhost:3000/pedido-item",
+        //       itemPedido
+        //     );
+        //     console.log("Item do pedido salvo:", itemResponse);
+        //   } catch (error) {
+        //     console.error("Erro ao salvar item do pedido:", error);
+        //   }
+        // }
       } catch (error) {
         console.error("Erro ao salvar pedido:", error);
       }      

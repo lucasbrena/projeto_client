@@ -12,8 +12,12 @@
               <span class="signal">●●●●○</span>
             </div>
             <v-card-text class="reservation-screen">
-              <div class="reservation-content">
+              <div>
                 <h2 class="menu-title">Reserva de Mesa</h2>
+              </div>
+              <div class="reservation-content">
+                <h2>{{ estabelecimento.nome }}</h2>
+                 <h2>Olá {{ cliente.nome }}</h2>
                 <p class="menu-subtitle">
                   Escolha a data, horário e número de pessoas
                 </p>
@@ -82,9 +86,12 @@ export default {
       "6 pessoas",
     ],
     cliente: {},
+    estabelecimento: {},
+    datenow: new Date('2025-06-18T20:00:00Z'),
   }),
   created() {
-    this.getCliente();    
+    this.getCliente(); 
+    this.getEstabelecimento();   
   },
   methods: {
     formatPrice(value) {
@@ -124,37 +131,58 @@ export default {
       }
     },
     async getCliente() {
-      let clienteId = 14;
+      let clienteId = 5;
       this.cliente = await this.apiRequest(
         "get",
         `http://localhost:3000/cliente/${clienteId}`
       );
-      console.log("Cliente:porra", this.cliente);
+      console.log("Dados do cliente:", this.cliente);
+      
     },
-
+  async getEstabelecimento() {
+      try {
+        let estabelecimentoId = 1; 
+        this.estabelecimento = await this.apiRequest(
+          "get",
+          `http://localhost:3000/estabelecimento/${estabelecimentoId}`
+        );     
+        console.log("Estabelecimento:", this.estabelecimento);
+      } catch (error) {
+        console.error("Erro ao obter estabelecimento:", error);
+      }
+    },
     async reservarMesa() {
       const payload = {
-        date: this.reservationData.date,
-        time: this.reservationData.time,
-        people: this.reservationData.people,
-      };
+       cliente: this.cliente.id,
+        estabelecimento: this.estabelecimento.id,
+        dt_reserva: this.datenow,
+        qtd_lugares: 3
+            };
       console.log("Dados da reserva:", payload);
 
-      // try {
-      //   const response = await this.apiRequest(
-      //     "post",
-      //     "http://localhost:3000/reserva-mesa",
-      //     payload
-      //   );
-      //   console.log("Reserva de mesa criada com sucesso:", response);
-      //   alert("Reserva realizada com sucesso!");
-      //   return response;
-      //   // Aqui você pode redirecionar ou atualizar a tela conforme necessário
-      // } catch (error) {
-      //   // O tratamento de erro já está no apiRequest
-      //   console.error("Erro ao criar reserva:", error);
-      //   return null;
-      // }
+      try {
+        const response = await this.apiRequest(
+          "post",
+          "http://localhost:3000/reserva-mesa-log",
+          payload
+        );
+        console.log("Reserva de mesa criada com sucesso:", response);
+        alert("Reserva realizada com sucesso!");
+        return response;
+        // Aqui você pode redirecionar ou atualizar a tela conforme necessário
+      } catch (error) {
+        // O tratamento de erro já está no apiRequest
+        console.error("Erro ao criar reserva:", error);
+        return null;
+      }
+    },
+    async getReserva() {
+      let reserva= await this.apiRequest(
+        "get",
+        "http://localhost:3000/reserva-mesa-log"
+      );
+      console.log("porra reserva:", reserva);
+      
     },
   },
 };
