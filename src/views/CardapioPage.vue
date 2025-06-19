@@ -124,7 +124,7 @@ export default {
       }
     },
     async getCliente() {
-      let clienteId = 14;
+      let clienteId = 5;
       this.cliente = await this.apiRequest(
         "get",
         `http://localhost:3000/cliente/${clienteId}`
@@ -155,71 +155,71 @@ export default {
         console.error("Erro ao obter produtos:", error);
       }
     },
-    async getPedido() {
-      try {
-        let pedidos = await this.apiRequest(
-          "get",
-          "http://localhost:3000/pedido"
-        );
-        console.log("Pedidos:", pedidos);
-      } catch (error) {
-        console.error("Erro ao obter pedidos:", error);
-      }
-    },
-    async getPedidoItem() {
-      try {
-        let pedidoItems = await this.apiRequest(
-          "get",
-          "http://localhost:3000/pedido-item"
-        );
-        console.log("Itens do Pedido:", pedidoItems);
-      } catch (error) {
-        console.error("Erro ao obter itens do pedido:", error);
-      }
-    },
-    async savePedido(item) {
-      try {
-        console.log(item);
+    // async getPedido() {
+    //   try {
+    //     let pedidos = await this.apiRequest(
+    //       "get",
+    //       "http://localhost:3000/pedido"
+    //     );
+    //     console.log("Pedidos:", pedidos);
+    //   } catch (error) {
+    //     console.error("Erro ao obter pedidos:", error);
+    //   }
+    // },
+    // async getPedidoItem() {
+    //   try {
+    //     let pedidoItems = await this.apiRequest(
+    //       "get",
+    //       "http://localhost:3000/pedido-item"
+    //     );
+    //     console.log("Itens do Pedido:", pedidoItems);
+    //   } catch (error) {
+    //     console.error("Erro ao obter itens do pedido:", error);
+    //   }
+    // },
+    // async savePedido(item) {
+    //   try {
+    //     console.log(item);
         
-        let obj = {
-          dataCriacao: this.dataAtual,
-          cliente: this.cliente.id,
-          estabelecimento: this.estabelecimento.id,
-          itens: [{
-              quantidade: 1,             
-              produto: item.id,
-            }],
-        };
-        console.log("Objeto do pedido:", obj);
+    //     let obj = {
+    //       dataCriacao: this.dataAtual,
+    //       cliente: this.cliente.id,
+    //       estabelecimento: this.estabelecimento.id,
+    //       itens: [{
+    //           quantidade: 1,             
+    //           produto: item.id,
+    //         }],
+    //     };
+    //     console.log("Objeto do pedido:", obj);
         
         
-        //   let response = await this.apiRequest(
-        //     "post",
-        //     "http://localhost:3000/pedido",
-        //     obj
-        //   );
-        // console.log("Pedido salvo:", response);
-        // if (response && response.id) {
-        //   try {
-        //     let itemPedido = {
-        //       quantidade: 1,
-        //       pedido: response.id,
-        //       produto: item.id,
-        //     };
-        //     let itemResponse = await this.apiRequest(
-        //       "post",
-        //       "http://localhost:3000/pedido-item",
-        //       itemPedido
-        //     );
-        //     console.log("Item do pedido salvo:", itemResponse);
-        //   } catch (error) {
-        //     console.error("Erro ao salvar item do pedido:", error);
-        //   }
-        // }
-      } catch (error) {
-        console.error("Erro ao salvar pedido:", error);
-      }      
-    },
+    //     //   let response = await this.apiRequest(
+    //     //     "post",
+    //     //     "http://localhost:3000/pedido",
+    //     //     obj
+    //     //   );
+    //     // console.log("Pedido salvo:", response);
+    //     // if (response && response.id) {
+    //     //   try {
+    //     //     let itemPedido = {
+    //     //       quantidade: 1,
+    //     //       pedido: response.id,
+    //     //       produto: item.id,
+    //     //     };
+    //     //     let itemResponse = await this.apiRequest(
+    //     //       "post",
+    //     //       "http://localhost:3000/pedido-item",
+    //     //       itemPedido
+    //     //     );
+    //     //     console.log("Item do pedido salvo:", itemResponse);
+    //     //   } catch (error) {
+    //     //     console.error("Erro ao salvar item do pedido:", error);
+    //     //   }
+    //     // }
+    //   } catch (error) {
+    //     console.error("Erro ao salvar pedido:", error);
+    //   }      
+    // },
 
     //  async postEstabelecimento() {
     //     try {

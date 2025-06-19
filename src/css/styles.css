@@ -417,6 +417,11 @@
   color: #ffffff !important;
   border-radius: 10px;
 }
+.warning-btn {
+  background-color: #ffc107 !important;
+  color: #2c2c2c !important;
+  border-radius: 10px;
+}
 
 .secondary-btn {
   background-color: #f8f9fa !important;

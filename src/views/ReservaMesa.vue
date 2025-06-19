@@ -13,17 +13,17 @@
             </div>
             <v-card-text class="reservation-screen">
               <div>
-                <h2 class="menu-title">Reserva de Mesa</h2>
+                <h2>{{ estabelecimento.nome }}</h2>
               </div>
               <div class="reservation-content">
-                <h2>{{ estabelecimento.nome }}</h2>
-                 <h2>Olá {{ cliente.nome }}</h2>
+                <h2 class="menu-title">Reserva de Mesa</h2>
+                <h2>Olá {{ cliente.nome }}</h2>
                 <p class="menu-subtitle">
                   Escolha a data, horário e número de pessoas
                 </p>
                 <v-form class="reservation-form">
                   <v-text-field
-                    v-model="reservationData.date"
+                    v-model="selectedData"
                     type="date"
                     outlined
                     dense
@@ -32,7 +32,7 @@
                     style="border-radius: 10px"
                   />
                   <v-text-field
-                    v-model="reservationData.time"
+                    v-model="selectedHora"
                     type="time"
                     outlined
                     dense
@@ -41,18 +41,56 @@
                     style="border-radius: 10px"
                   />
                   <v-select
-                    v-model="reservationData.people"
+                    v-model="selectedPeople"
                     :items="peopleOptions"
                     outlined
                     dense
-                    hide-details
+                    hide-detail
                     class="mb-4"
                     style="border-radius: 10px"
+                    item-text="text"
+                    item-value="value"
                   />
-                  <v-btn large class="primary-btn" @click="reservarMesa()">
+                  <v-btn
+                    v-if="!reserva.length > 0"
+                    :disabled="!disableBtn"
+                    large
+                    class="primary-btn"
+                    @click="reservarMesa()"
+                  >
                     Reservar Mesa
                   </v-btn>
+                  <v-btn v-else large 
+                  :disabled="!disableBtn2"
+                    class="warning-btn"
+                    @click="editarMesa()">
+                    alterar reserva
+                  </v-btn>
                 </v-form>
+              </div>
+              <div v-if="this.reserva != null">
+                <div class="mt-4">
+                  <div v-if="Array.isArray(reserva) && reserva.length">
+                    <h3>Última Reserva</h3>
+                    <div>
+                      <strong>Data:</strong>
+                      {{
+                        new Date(
+                          reserva[reserva.length - 1].dt_reserva
+                        ).toLocaleString()
+                      }}
+                    </div>
+                    <div>
+                      <strong>Quantidade de Pessoas:</strong>
+                      {{ reserva[reserva.length - 1].qtd_lugares }}
+                    </div>
+                    <div>
+                      <strong>Status:</strong>
+                      {{ reserva[reserva.length - 1].status || "Pendente" }}
+                    </div>
+                  </div>
+                  <!-- <div v-else>Nenhuma reserva encontrada.</div> -->
+                </div>
               </div>
             </v-card-text>
           </div>
@@ -72,42 +110,58 @@ export default {
   },
   data: () => ({
     tab: "option-1",
-    reservationData: {
-      date: "",
-      time: "",
-      people: "2 pessoas",
-    },
+    selectedData: null,
+    selectedHora: null,
+    selectedPeople: null,
     peopleOptions: [
-      "1 pessoa",
-      "2 pessoas",
-      "3 pessoas",
-      "4 pessoas",
-      "5 pessoas",
-      "6 pessoas",
+      {
+        value: "1",
+        text: "1 pessoa",
+      },
+      {
+        value: "2",
+        text: "2 pessoas",
+      },
+      {
+        value: "3",
+        text: "3 pessoas",
+      },
+      {
+        value: "4",
+        text: "4 pessoas",
+      },
     ],
+    disableBtn: false,
+    disableBtn2: false,
     cliente: {},
     estabelecimento: {},
-    datenow: new Date('2025-06-18T20:00:00Z'),
+    datenow: new Date("2025-06-18T20:00:00Z"),
+    reserva: [],
   }),
-  created() {
-    this.getCliente(); 
-    this.getEstabelecimento();   
+  watch: {
+    // Observar mudanças em qualquer um dos campos
+    selectedData() {
+      this.validateForm();
+    },
+    selectedHora() {
+      this.validateForm();
+    },
+    selectedPeople() {
+      this.validateForm();
+    },
   },
+  created() {
+    this.getCliente();
+    this.getEstabelecimento();
+    this.getReserva();
+  },
+
   methods: {
-    formatPrice(value) {
-      return `R$ ${value.toFixed(2).replace(".", ",")}`;
-    },
-    increaseQuantity(itemId) {
-      const item = this.cartItems.find((item) => item.id === itemId);
-      if (item) {
-        item.quantity++;
-      }
-    },
-    decreaseQuantity(itemId) {
-      const item = this.cartItems.find((item) => item.id === itemId);
-      if (item && item.quantity > 1) {
-        item.quantity--;
-      }
+    validateForm() {
+      const isFormValid =
+        this.selectedData && this.selectedHora && this.selectedPeople;
+      this.disableBtn = isFormValid;
+      this.disableBtn2 = isFormValid && this.reserva.length > 0;
     },
     async apiRequest(method, url, data = null) {
       try {
@@ -137,28 +191,29 @@ export default {
         `http://localhost:3000/cliente/${clienteId}`
       );
       console.log("Dados do cliente:", this.cliente);
-      
     },
-  async getEstabelecimento() {
+    async getEstabelecimento() {
       try {
-        let estabelecimentoId = 1; 
+        let estabelecimentoId = 1;
         this.estabelecimento = await this.apiRequest(
           "get",
           `http://localhost:3000/estabelecimento/${estabelecimentoId}`
-        );     
+        );
         console.log("Estabelecimento:", this.estabelecimento);
       } catch (error) {
         console.error("Erro ao obter estabelecimento:", error);
       }
     },
     async reservarMesa() {
+      const dateString = `${this.selectedData}T${this.selectedHora}`;
+      const date = new Date(dateString).toISOString();
+
       const payload = {
-       cliente: this.cliente.id,
-        estabelecimento: this.estabelecimento.id,
-        dt_reserva: this.datenow,
-        qtd_lugares: 3
-            };
-      console.log("Dados da reserva:", payload);
+        id_cliente: this.cliente.id,
+        id_estabelecimento: this.estabelecimento.id,
+        dt_reserva: date,
+        qtd_lugares: this.selectedPeople,
+      };
 
       try {
         const response = await this.apiRequest(
@@ -168,21 +223,45 @@ export default {
         );
         console.log("Reserva de mesa criada com sucesso:", response);
         alert("Reserva realizada com sucesso!");
+        this.getReserva(); // Atualiza a lista de reservas após criar uma nova
         return response;
-        // Aqui você pode redirecionar ou atualizar a tela conforme necessário
       } catch (error) {
-        // O tratamento de erro já está no apiRequest
         console.error("Erro ao criar reserva:", error);
         return null;
       }
     },
     async getReserva() {
-      let reserva= await this.apiRequest(
+      this.reserva = await this.apiRequest(
         "get",
         "http://localhost:3000/reserva-mesa-log"
       );
-      console.log("porra reserva:", reserva);
-      
+      console.log("reserva:", this.reserva);
+    },
+   
+    async editarMesa() {
+      const dateString = `${this.selectedData}T${this.selectedHora}`;
+      const date = new Date(dateString).toISOString();
+
+      const payload = {
+        id: this.reserva[0].id, // Supondo que você queira editar a primeira reserva
+        dt_reserva: date,
+        qtd_lugares: this.selectedPeople,
+      };
+
+      try {
+        const response = await this.apiRequest(
+          "patch",
+          `http://localhost:3000/reserva-mesa-log/${payload.id}`,
+          payload
+        );
+        console.log("Reserva de mesa atualizada com sucesso:", response);
+        alert("Reserva atualizada com sucesso!");
+        this.getReserva(); // Atualiza a lista de reservas após editar
+        return response;
+      } catch (error) {
+        console.error("Erro ao atualizar reserva:", error);
+        return null;
+      }
     },
   },
 };
