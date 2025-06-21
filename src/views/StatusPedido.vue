@@ -14,13 +14,13 @@
             <v-card-text class="status-screen">
               <div class="status-content">
                 <h2 class="menu-title">Status do Pedido</h2>
-                <div class="order-number">#1247</div>
+                <div class="order-number">#{{ itens.id }}</div>
                 <div class="status-steps">
                   <div
                     v-for="(step, index) in orderSteps"
                     :key="index"
                     class="status-step"
-                    :class="{ active: index === 0 }"
+                    :class="{ active: index === status}"
                   >
                     <span class="step-icon">{{ step.icon }}</span>
                     <span class="step-text">{{ step.text }}</span>
@@ -33,9 +33,16 @@
                 <v-btn                                   
                   large
                   class="primary-btn"
-                  @click="savePedido()"
+                  @click="alterarStatus()"
                 >
                   Atualizar Status
+                </v-btn>
+                <v-btn                                   
+                  large
+                  class="primary-btn"
+                  @click="removePedido()"
+                >
+                  Remover pedido
                 </v-btn>
               </div>
             </v-card-text>
@@ -71,6 +78,8 @@ export default {
       month: "2-digit",
       year: "numeric",
     }), 
+    itens: [],
+    status: 0.
   }),
    created() {
     this.getCliente();
@@ -78,8 +87,10 @@ export default {
     this.getProdutos();
     this.getProduto();
     this.getPedido();
-    this.getPedidoItem();
-    
+    this.getPedidosItens();
+    this.getAllPedidoItens();
+
+
     // this.getRamos();
   },
   methods: {
@@ -106,7 +117,7 @@ export default {
       }
     },
     async getCliente() {
-      let clienteId = 5;
+      let clienteId = 1;
       this.cliente = await this.apiRequest(
         "get",
         `http://localhost:3000/cliente/${clienteId}`
@@ -161,13 +172,25 @@ export default {
         console.error("Erro ao obter pedidos:", error);
       }
     },
-    async getPedidoItem() {
+    async getPedidosItens() {
       try {
         let pedidoItems = await this.apiRequest(
           "get",
           "http://localhost:3000/pedido-item"
         );
-        console.log("Itens do Pedido:", pedidoItems);
+        console.log("Itens do Pedido:", pedidoItems, 'oi');
+      } catch (error) {
+        console.error("Erro ao obter itens do pedido:", error);
+      }
+    },
+    async getAllPedidoItens() {
+      try {
+        let pedido = await this.apiRequest(
+          "get",
+          "http://localhost:3000/pedido/13/com-itens"
+        );
+        console.log("Itens do Pedido:", pedido);
+        this.itens = pedido;
       } catch (error) {
         console.error("Erro ao obter itens do pedido:", error);
       }
@@ -213,6 +236,41 @@ export default {
       } catch (error) {
         console.error("Erro ao salvar pedido:", error);
       }      
+    },
+    async removePedido() {
+     try {
+    
+    let response = await this.apiRequest(
+      "delete",
+      `http://localhost:3000/pedido/8`,
+      { } // Substitua pelo ID do pedido que deseja remover
+    );
+    console.log("Removido com sucesso", response ?? "Sem conteúdo na resposta");
+    return response;
+  } catch (error) {
+    console.error("Erro ao remover", error);
+  }
+    },
+    async alterarStatus() {
+      try {
+          let response = await this.apiRequest(
+          "patch",
+          `http://localhost:3000/pedido/13`,
+          {
+            idStatusPedido: 2
+          } // Substitua pelo ID do pedido que deseja remover
+        );
+
+        let response2 = await this.apiRequest(
+          "get",
+          `http://localhost:3000/pedido/13/com-itens`,
+        );
+       
+        this.status = response2.statusPedido.id
+        return response;
+      } catch (error) {
+        console.error("Erro ao remover", error);
+      }
     },
 
     //  async postEstabelecimento() {
