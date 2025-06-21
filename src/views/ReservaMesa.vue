@@ -17,7 +17,7 @@
               </div>
               <div class="reservation-content">
                 <h2 class="menu-title">Reserva de Mesa</h2>
-                <h2>Olá {{ cliente.nome }}</h2>
+                <h2>Olá, {{ cliente.nome }}!!</h2>
                 <p class="menu-subtitle">
                   Escolha a data, horário e número de pessoas
                 </p>
@@ -64,7 +64,7 @@
                   :disabled="!disableBtn2"
                     class="warning-btn"
                     @click="editarMesa()">
-                    alterar reserva
+                    Alterar reserva
                   </v-btn>
                 </v-form>
               </div>
@@ -185,7 +185,7 @@ export default {
       }
     },
     async getCliente() {
-      let clienteId = 5;
+      let clienteId = 1;
       this.cliente = await this.apiRequest(
         "get",
         `http://localhost:3000/cliente/${clienteId}`

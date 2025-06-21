@@ -44,11 +44,18 @@
                         <v-btn
                           small
                           class="primary-btn"
-                          @click="savePedido(item)"
+                          @click="clicked = true"
                         >
                           <v-icon small>fas fa-utensils</v-icon> quero</v-btn
                         >
                       </div>
+                    </v-col>
+                    <v-col>
+                    <v-btn 
+                    :disabled="!clicked"
+                    class="primary-btn mt-4"
+                    @click="savePedido(item)"
+                    >Finalizar Pedido</v-btn>
                     </v-col>
                   </v-row>
                 </div>
@@ -56,7 +63,7 @@
               <div>
                 <v-row>
                   <v-col cols="12" class="text-center">
-                    <v-btn class="primary-btn mt-4">Finalizar Pedido</v-btn>
+                   
                   </v-col>
                 </v-row>
               </div>
@@ -72,6 +79,7 @@
 <script>
 import axios from "axios";
 import Tabs from "../components/TabTelas.vue";
+import router from "@/router";
 export default {
   components: {
     Tabs,
@@ -83,6 +91,8 @@ export default {
     menuItems: [],
     cliente: {},
     estabelecimento: {},
+    disableBtn: false,
+    clicked: false,
     dataAtual: new Date().toLocaleDateString("pt-BR", {
       day: "2-digit",
       month: "2-digit",
@@ -124,7 +134,7 @@ export default {
       }
     },
     async getCliente() {
-      let clienteId = 5;
+      let clienteId = 1;
       this.cliente = await this.apiRequest(
         "get",
         `http://localhost:3000/cliente/${clienteId}`
@@ -155,71 +165,61 @@ export default {
         console.error("Erro ao obter produtos:", error);
       }
     },
-    // async getPedido() {
-    //   try {
-    //     let pedidos = await this.apiRequest(
-    //       "get",
-    //       "http://localhost:3000/pedido"
-    //     );
-    //     console.log("Pedidos:", pedidos);
-    //   } catch (error) {
-    //     console.error("Erro ao obter pedidos:", error);
-    //   }
-    // },
-    // async getPedidoItem() {
-    //   try {
-    //     let pedidoItems = await this.apiRequest(
-    //       "get",
-    //       "http://localhost:3000/pedido-item"
-    //     );
-    //     console.log("Itens do Pedido:", pedidoItems);
-    //   } catch (error) {
-    //     console.error("Erro ao obter itens do pedido:", error);
-    //   }
-    // },
-    // async savePedido(item) {
-    //   try {
-    //     console.log(item);
+    async getPedido() {
+      try {
+        let pedidos = await this.apiRequest(
+          "get",
+          "http://localhost:3000/pedido"
+        );
+        console.log("Pedidos:", pedidos);
+      } catch (error) {
+        console.error("Erro ao obter pedidos:", error);
+      }
+    },
+    async getPedidoItem() {
+      try {
+        let pedidoItems = await this.apiRequest(
+          "get",
+          "http://localhost:3000/pedido-item"
+        );
+        console.log("Itens do Pedido:", pedidoItems);
+      } catch (error) {
+        console.error("Erro ao obter itens do pedido:", error);
+      }
+    },
+    async savePedido(item) {
+      try {
+        console.log(item);
         
-    //     let obj = {
-    //       dataCriacao: this.dataAtual,
-    //       cliente: this.cliente.id,
-    //       estabelecimento: this.estabelecimento.id,
-    //       itens: [{
-    //           quantidade: 1,             
-    //           produto: item.id,
-    //         }],
-    //     };
-    //     console.log("Objeto do pedido:", obj);
+        let obj = {
+              dtCriacao: 1,
+              idCliente: 1,
+              idEstabelecimento: 1,
+              idStatusPedido: 1,
+
+              itens: [
+                  {
+                    idProduto: 1,
+                    quantidade: 3
+                  }
+              ]
+          };
+        console.log("Objeto do pedido:", obj);
         
         
-    //     //   let response = await this.apiRequest(
-    //     //     "post",
-    //     //     "http://localhost:3000/pedido",
-    //     //     obj
-    //     //   );
-    //     // console.log("Pedido salvo:", response);
-    //     // if (response && response.id) {
-    //     //   try {
-    //     //     let itemPedido = {
-    //     //       quantidade: 1,
-    //     //       pedido: response.id,
-    //     //       produto: item.id,
-    //     //     };
-    //     //     let itemResponse = await this.apiRequest(
-    //     //       "post",
-    //     //       "http://localhost:3000/pedido-item",
-    //     //       itemPedido
-    //     //     );
-    //     //     console.log("Item do pedido salvo:", itemResponse);
-    //     //   } catch (error) {
-    //     //     console.error("Erro ao salvar item do pedido:", error);
-    //     //   }
-    //     // }
-    //   } catch (error) {
-    //     console.error("Erro ao salvar pedido:", error);
-    //   }      
-    // },
+           let response = await this.apiRequest(
+             "post",
+             "http://localhost:3000/pedido/com-itens",
+             obj
+           );
+         console.log("itens do Pedido salvo:", response);
+        router.replace({
+          path: "/status",
+        });
+      } catch (error) {
+        console.error("Erro ao salvar pedido:", error);
+      }      
+    },
 
     //  async postEstabelecimento() {
     //     try {

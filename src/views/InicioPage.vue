@@ -13,7 +13,7 @@
             <v-card-text class="qr-screen">
               <div class="menu-header">
                 <h3 class="menu-title">Comanda Digital</h3>
-                <h2>Olá {{ cliente.nome }}</h2>
+                <h2>Olá, {{ cliente.nome }}!!</h2>
               </div>
               <div class="qr-content">
                 <div class="qr-viewfinder">
@@ -32,7 +32,8 @@
                 <p class="qr-subtitle">
                   Posicione o código QR da <br />mesa para iniciar
                 </p>
-                <v-btn @click="postRamo()">porra</v-btn>
+               <!--  <v-btn @click="postRamo()">porra</v-btn> -->
+                <v-btn to='/reserva'>Iniciar</v-btn>
               </div>
             </v-card-text>
           </div>
@@ -46,6 +47,7 @@
 <script>
 import axios from "axios";
 import Tabs from "../components/TabTelas.vue";
+
 export default {
   components: {
     Tabs,
@@ -95,7 +97,7 @@ export default {
     },
     // get cliente by id
     async getCliente() {
-      let clienteId = 5;
+      let clienteId = 1;
       this.cliente = await this.apiRequest(
         "get",
         `http://localhost:3000/cliente/${clienteId}`
