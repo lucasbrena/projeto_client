@@ -108,11 +108,6 @@ export default {
         this.getProduto();
         this.getPedido();
         this.getPedidosItens();
-        this.getStatusPedido()
-  
-
-
-        // this.getRamos();
     },
     methods: {
 
@@ -145,13 +140,13 @@ export default {
             );
             console.log("Cliente:", this.cliente);
         },
-         async getStatusPedido() {
+         async getStatusPedido(pedidoId) {
           try {
             let response2 = await this.apiRequest(
                     "get",
-                    `http://localhost:3000/pedido/36/com-itens`,
+                    `http://localhost:3000/pedido/${pedidoId}/com-itens`,
                 );
-
+            console.log(response2)
                 this.status = response2.statusPedido.id;
           } catch (error) {
             console.error("Erro o status", error);
@@ -206,9 +201,10 @@ export default {
                     return;
                 }
 
+                this.getStatusPedido(pedidos.sort((a, b) => b.id - a.id)[0].id)
                 this.getAllPedidoItens(pedidos.sort((a, b) => b.id - a.id)[0].id);
 
-                this.itens = null;
+                this.itens = pedidos;
             } catch (error) {
                 console.error("Erro ao obter pedidos:", error);
             }
@@ -260,23 +256,6 @@ export default {
                     obj
                 );
                 console.log("Pedido salvo:", response);
-                // if (response && response.id) {
-                //   try {
-                //     let itemPedido = {
-                //       quantidade: 1,
-                //       pedido: response.id,
-                //       produto: item.id,
-                //     };
-                //     let itemResponse = await this.apiRequest(
-                //       "post",
-                //       "http://localhost:3000/pedido-item",
-                //       itemPedido
-                //     );
-                //     console.log("Item do pedido salvo:", itemResponse);
-                //   } catch (error) {
-                //     console.error("Erro ao salvar item do pedido:", error);
-                //   }
-                // }
             } catch (error) {
                 console.error("Erro ao salvar pedido:", error);
             }
@@ -306,7 +285,7 @@ export default {
                     `http://localhost:3000/pedido/${pedidoId}`,
                     {
                         idStatusPedido: 2
-                    } // Substitua pelo ID do pedido que deseja remover
+                    }
                 );
 
                 let response2 = await this.apiRequest(
@@ -320,26 +299,6 @@ export default {
                 console.error("Erro ao remover", error);
             }
         },
-
-        //  async postEstabelecimento() {
-        //     try {
-        //       const estabelecimentoData = {
-        //         nome: "Restaurante Turiassu",
-        //         cnpj: "12.345.678/0001-90",
-        //         endereco: "Rua Turiassu, 1234",
-        //         idRamo: 1,
-        //       };
-        //       let ramo = await this.apiRequest(
-        //         "post",
-        //         "http://localhost:3000/estabelecimento",
-        //         estabelecimentoData
-        //       );
-        //       console.log("Ramo criado:", ramo);
-        //     } catch (error) {
-        //       console.error("Erro ao criar ramo:", error);
-        //     }
-        //   },
-
         async postProduto() {
             try {
                 const produtoData = {
@@ -381,23 +340,7 @@ export default {
             } catch (error) {
                 console.error("Erro ao obter ramos:", error);
             }
-        },
-
-        // async postRamo() {
-        //   try {
-        //      const ramoData = {
-        //       nome: "Restaurante Turiassu",
-        //     };
-        //     let ramo = await this.apiRequest(
-        //       "post",
-        //       "http://localhost:3000/ramos",
-        //       ramoData
-        //     );
-        //     console.log("Ramo criado:", ramo);
-        //   } catch (error) {
-        //     console.error("Erro ao criar ramo:", error);
-        //   }
-        // },
+        }
     },
 };
 </script>

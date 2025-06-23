@@ -218,7 +218,7 @@ export default {
             }
         },
         async getCliente() {
-            let clienteId = 2;
+            let clienteId = 1;
             this.cliente = await this.apiRequest(
                 "get",
                 `http://localhost:3000/cliente/${clienteId}`
