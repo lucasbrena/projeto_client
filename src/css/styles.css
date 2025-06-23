@@ -1,3 +1,15 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.row-2, .row-2-reservation {
+  background-color: #E0E0E0; 
+  height: 20rem; 
+  border-top-left-radius: 1.5rem; 
+  border-top-right-radius: 1.5rem;
+}
 
 .presentation-container {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -5,14 +17,18 @@
   padding: 20px;
 }
 
+.status-bar {
+  margin-top: .75rem;
+}
+
 .phone-mockup {
-  width: 380px;
-  height: 580px;
+  width: 360px;
+  height: 690px;
   background: #2c2c2c;
-  border-radius: 35px;
-  border: 10px solid #ffffff;
-  padding: 8px;
+  border-radius: 30px !important;
   position: relative;
+  overflow: hidden;
+  border: 7px solid #000 !important;
   transition: transform 0.3s ease;
   margin-bottom: 50px;
 }
@@ -63,13 +79,7 @@
 
 /* QR Screen Styles */
 .qr-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 40px 30px !important;
+  padding: 40px 0 40px 0 !important;
 }
 
 .qr-content {
@@ -140,21 +150,19 @@
 
 /* Menu Screen Styles */
 .menu-screen {
-  padding: 20px !important;
+  padding: 40px 0 40px 0 !important;
 }
 
-.menu-header {
+/* .menu-header {
   text-align: center;
   padding: 20px 0;
   border-bottom: 1px solid #e9ecef;
   margin-bottom: 20px;
-}
+} */
 
 .menu-title {
-  font-size: 20px !important;
-  color: #2c2c2c;
-  font-weight: 700;
-  margin-bottom: 5px;
+  font-size: 1.35rem;
+
 }
 
 .menu-subtitle {
@@ -171,19 +179,15 @@
   margin-right: 8px;
 }
 
-.menu-items {
-  flex: 1;
-  /* overflow-y: auto; */
-}
 
-.menu-item {
+/* .menu-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 5px 0;
   border-bottom: 1px solid #f1f3f4;
   height: 100px;
-}
+} */
 
 .item-info h4 {
   font-size: 16px;
@@ -211,17 +215,11 @@
 
 /* Reservation Screen Styles */
 .reservation-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 30px !important;
+  padding: 40px 0 40px 0 !important;
 }
 
 .reservation-content {
-  width: 100%;
-  max-width: 220px;
+
   text-align: center;
 }
 
@@ -237,7 +235,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 40px 30px !important;
+  padding: 40px 0 40px 0 !important;
 }
 
 .confirmation-content {
@@ -270,7 +268,6 @@
   font-size: 32px;
   color: #2c2c2c;
   font-weight: 800;
-  margin: 20px 0;
 }
 
 .confirmation-text {
@@ -282,21 +279,7 @@
 
 /* Status Screen Styles */
 .status-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 40px 30px !important;
-}
-
-.status-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
+  padding: 40px 0 40px 0 !important;
 }
 
 .status-steps {
