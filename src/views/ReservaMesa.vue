@@ -20,55 +20,41 @@
                                         <div class="my-1"></div>
                                         <span class="font-weight-thin">Primeiro você deve reservar uma mesa</span>
                                     </div>
-                                    
+
                                     <div class="my-4"></div>
 
                                     <span class="menu-subtitle">Escolha a data, horário e Nº de pessoas</span>
 
                                     <v-form class="reservation-form w-100">
-                                        <v-text-field 
-                                            v-model="selectedData" 
-                                            type="date"
-                                            outlined 
-                                            dense 
-                                            hide-detailsclass="mb-3" 
-                                            class="rounded"
-                                        />
-                                        <v-text-field 
-                                            v-model="selectedHora" 
-                                            type="time" 
-                                            outlined 
-                                            dense
-                                            hide-detailsclass="mb-3" 
-                                            class="rounded mb-3"
-                                        />
-                                        <v-select 
-                                            v-model="selectedPeople" 
-                                            :items="peopleOptions" 
-                                            outlined 
-                                            dense 
-                                            hide-detail
-                                            class="rounded mb-4" 
-                                            item-text="text" 
-                                            item-value="value" 
-                                        />
-                                        <v-btn 
-                                            v-if="!reserva.length > 0" 
-                                            :disabled="!disableBtn" 
-                                            large 
-                                            class="rounded primary-btn" 
-                                            @click="reservarMesa()"> 
+                                        <v-text-field v-model="selectedData" type="date" outlined dense
+                                            hide-detailsclass="mb-3" class="rounded" />
+                                        <v-text-field v-model="selectedHora" type="time" outlined dense
+                                            hide-detailsclass="mb-3" class="rounded mb-2" />
+                                        <v-select v-model="selectedPeople" :items="peopleOptions" outlined dense
+                                            hide-detail class="rounded mb-4" item-text="text" item-value="value" />
+
+                                    </v-form>
+
+                                    <div v-if="!reserva.length > 0">
+                                        <v-btn :disabled="!disableBtn" large class="rounded primary-btn"
+                                            @click="reservarMesa()">
                                             Reservar Mesa
                                         </v-btn>
+                                    </div>
 
-                                        <v-btn v-else                      
-                                            large 
-                                            :disabled="!disableBtn2" 
-                                            class="rounded warning-btn" 
+                                    <div v-else>
+                                        <v-btn block large :disabled="!disableBtn2" class="rounded warning-btn"
                                             @click="editarMesa()">
                                             Alterar reserva
                                         </v-btn>
-                                    </v-form>
+
+                                        <div class="my-4"></div>
+
+                                        <v-btn block large class="rounded primary-btn" @click="deletarReserva()">
+                                            Cancelar reserva
+                                        </v-btn>
+                                    </div>
+
                                 </div>
 
                                 <div class="mt-10"></div>
@@ -114,7 +100,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div v-else class="mt-12 font-weight-regular text-h6">Reserve sua mesa!</div>
+                                        <div v-else class="mt-16 font-weight-regular text-h6">Reserve sua mesa!</div>
                                     </div>
                                 </div>
                             </div>
@@ -193,8 +179,8 @@ export default {
         validateForm() {
             const isFormValid =
                 this.selectedData && this.selectedHora && this.selectedPeople;
-                this.disableBtn = isFormValid;
-                this.disableBtn2 = isFormValid && this.reserva.length > 0;
+            this.disableBtn = isFormValid;
+            this.disableBtn2 = isFormValid && this.reserva.length > 0;
         },
         async apiRequest(method, url, data = null) {
             try {
@@ -298,16 +284,37 @@ export default {
                 return null;
             }
         },
+        async deletarReserva() {
+            const payload = {
+                id: this.reserva[0].id, // Supondo que você queira editar a primeira reserva
+            };
+
+            try {
+                const response = await this.apiRequest(
+                    "delete",
+                    `http://localhost:3000/reserva-mesa-log/${payload.id}`,
+                    {}
+                );
+                console.log("Reserva de mesa removida com sucesso:", response);
+                alert("Reserva removida com sucesso!");
+                this.resetFormFields();
+                this.getReserva(); // Atualiza a lista de reservas após editar
+                return response;
+            } catch (error) {
+                console.error("Erro ao atualizar reserva:", error);
+                return null;
+            }
+        },
     },
 };
 </script>
 
 <style scoped>
-    .reservation-form-field {
-        border-radius: .3rem;
-    }
+.reservation-form-field {
+    border-radius: .3rem;
+}
 
-    .phone-mockup {
-        overflow: hidden;
-    }
+.phone-mockup {
+    overflow: hidden;
+}
 </style>

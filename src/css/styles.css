@@ -6,7 +6,7 @@
 
 .row-2, .row-2-reservation {
   background-color: #E0E0E0; 
-  height: 20rem; 
+  height: 30rem; 
   border-top-left-radius: 1.5rem; 
   border-top-right-radius: 1.5rem;
 }
@@ -23,7 +23,7 @@
 
 .phone-mockup {
   width: 360px;
-  height: 690px;
+  height: 750px;
   background: #2c2c2c;
   border-radius: 30px !important;
   position: relative;
